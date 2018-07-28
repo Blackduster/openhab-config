@@ -1,0 +1,7 @@
+Bridge homematic:bridge:ccu "CCU Homegear Bridge" @ "Büro" [ gatewayAddress="127.0.0.1" ]
+{
+    Thing HG-HM-CC-RT-DN       OEQ1255511   "Buero" @ "Büro"
+    Thing GATEWAY-EXTRAS-CCU   GWE00000000  "Gateway Extras"
+}
+
+// vim: syntax=Xtend

@@ -1,0 +1,36 @@
+sitemap default label="Wohnung"{
+
+    Frame label="Temperaturen und Heizung" {
+        Selection item=Whg_Heating_Mode label="Heizmodus (Wohnung) []" mappings=[SEMESTER="Semester",
+        FERIEN="Semesterferien",
+        PARTY="Party",
+        SICKDAY="Krankheitstag",
+        WEEKEND_TRIP="Wochenendtrip",
+        AWAY="Unterwegs",
+        OFF_SUMMER="Aus (Sommer-Standby)"
+        ] 
+
+        Text label="Büro Heizstellglied [N/A ✘]" icon="error2" visibility=[BR_Heizung_Unreach == ON] valuecolor=["maroon"]
+        Text item=BR_Heizung_Summary label="Büro [%s]" visibility=[BR_Heizung_Unreach != ON] icon="text" {
+            Frame label="Temperatur" {
+                Text item=BR_Heizung_ActTemp label="Aktuelle Temperatur [%.1f °C]"
+            }
+            Frame label="Heizung Büro" {
+                Setpoint item=BR_Heizung_SetTemp label="Stellwert (±1) [%.1f °C]" minValue=4.5 maxValue=30.5 step=1.0 visibility=[BR_Heizung_SetTemp > 4.5]
+                Setpoint item=BR_Heizung_SetTemp label="Stellwert (±½) [%.1f °C]" minValue=4.5 maxValue=30.5 step=0.5 visibility=[BR_Heizung_SetTemp > 4.5]
+                Switch item=BR_Heizung_SetTemp label="Stellglied [OFF]" mappings=[5.0=Einschalten] visibility=[BR_Heizung_SetTemp == 4.5]
+                Switch item=BR_Heizung_Preset label="Schnellwahl" mappings=[0="Abgesenkt", 1="Komfort", 2="Warm"]
+                Switch item=BR_Heizung_BoostMode label="Boost (5min)" mappings=[ON="Starten"]
+                Text item=BR_Heizung_BoostTime label="Boost-Restzeit [%d min]" visibility=[BR_Heizung_BoostTime > 0]
+                Text item=BR_Heizung_Valve label="Ventilstellung [%d %%]"
+            }
+        }
+
+        Frame label="Pufferspeicher"{
+        Text item=Pufferspeicher_RechtsOben_Output label="Temperatur Oben"
+        Text item=Pufferspeicher_RechtsUnten_Output  label="Temperatur Unten"
+        }
+	    
+    }
+	
+}

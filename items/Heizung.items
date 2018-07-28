@@ -1,0 +1,30 @@
+Group                     Heating_Group          "Heizung Gesamt"                               <heating>         (W66a)
+Group                     Heating_WZ             "Heizung Wohnzimmer"                           <heating>         (Heating_Group)
+Group                     Heating_FK             "Heizung Flur/Küche"                           <heating>         (Heating_Group)
+Group                     Heating_BR             "Heizung Schlafzimmer"                         <heating>         (Heating_Group)
+Group                     Heating_BD             "Heizung Bad"                                  <heating>         (Heating_Group)
+Group                     Heating_BR             "Heizung Büro"                       		    <heating>         (Heating_Group)
+Group:Number:AVG          Heating_TargetTemps    "Raumtemperaturen Soll [%.1f °C]"              <temperature>     (Heating_Group)
+Group:Switch:OR(ON, OFF)  Heating_ValveSettings  "Aktive Heizkörper [%d]"                       <heating>         (Heating_Group)
+Group                     Heating_OpModes        "Raumtemperaturen Mode [%.1f °C]"              <"heating-off">   (Heating_Group)
+Group:Number:AVG          Heating_TargetPresets  "Raumtemperaturen Soll Zeitprogramm [%.1f °C]" <line>            (Heating_Group)
+//Group:NUMBER:SUM 		  Heating_WindowModes 	 "Fensterabsenkung"							    <window> 		  (Heating_Group)
+
+
+Number BR_Heizung_RSSI              "BR_Heizung RSSI [%d dBm]"                                  <"signal-3">      (Heating_BR,RSSI_Group)               {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:0#RSSI_DEVICE"}
+Switch BR_Heizung_Unreach           "BR_Heizung unreachable"                                    <siren>           (Heating_BR,Unreach_Group)            {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:0#UNREACH"}
+Switch BR_Heizung_Pending           "BR_Heizung config pending"                                 <siren>           (Heating_BR,Pending_Group)            {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:0#CONFIG_PENDING"}
+Number BR_Heizung_Battery           "BR_Heizung Batteriezustand [%.1f V]"                       <"battery-100">   (Heating_BR,Bat_Volts)                {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#BATTERY_STATE"}
+String BR_Heizung_Fault             "BR_Heizung Fehlerwert [MAP(HM-CC-RT-DN.map):%s]"           <error2>          (Heating_BR,Error_Group)              {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#FAULT_REPORTING"}
+Number BR_Heizung_ActTemp           "BR_Heizung Ist-Temperatur [%.1f °C]"                       <temperature>     (Heating_BR,BR,Temperatures)          {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#ACTUAL_TEMPERATURE"}
+Number BR_Heizung_SetTemp           "BR_Heizung Soll-Temperatur [%.1f °C]"                      <temperature>     (Heating_BR,BR,Heating_TargetTemps)   {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#SET_TEMPERATURE"}
+Number BR_Heizung_Valve             "BR_Heizung Ventilstellung [%d %%]"                         <heating>         (Heating_BR,BR,Heating_ValveSettings) {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#VALVE_STATE"}
+String BR_Heizung_Mode              "BR_Heizung Betriebsart [MAP(HM-CC-RT-DN.map):%s]"          <"heating-off">   (Heating_BR,BR,Heating_OpModes)       {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#CONTROL_MODE"}
+Switch BR_Heizung_Auto              "BR_Heizung Auto-Mode"                                      <temperature>     (Heating_BR)                          {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#AUTO_MODE"}
+Number BR_Heizung_Manu              "BR_Heizung Manu-Mode [%.1f °C]"                            <"heating-40">    (Heating_BR)                          {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#MANU_MODE"}
+Switch BR_Heizung_BoostMode         "BR_Heizung Boost-Mode"                                     <fire>            (Heating_BR)                          {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#BOOST_MODE"}
+Number BR_Heizung_BoostTime         "BR_Heizung Boost-Restdauer [%d min]"                       <"clock-on">      (Heating_BR)                          {channel="homematic:HG-HM-CC-RT-DN:ccu:OEQ1255511:4#BOOST_STATE"}
+Switch BR_Heizung_WindowMode        "BR_Heizung Fensterabsenkung"                               <window>          (Heating_BR,BR,Heating_WindowModes)
+Number BR_Heizung_Preset            "BR_Heizung Soll-Temperatur Schnellauswahl"                 <"heating-60">    (Heating_BR)
+Number BR_Heizung_PresetTemp        "BR_Heizung Soll-Temperatur Zeitprogramm [%.1f °C]"         <line>            (Heating_BR,Heating_TargetPresets)
+String BR_Heizung_Summary 			"BR_Heizung Übersicht [%s]" 								<thermometer_red> (Heating_BR,BR)

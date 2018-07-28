@@ -1,0 +1,247 @@
+val String filename = "heizung-modus.rules"
+
+// vordefinierte Temperaturen
+val Number tempHigh = 23.0
+val Number tempComfort = 21.0
+val Number tempMid = 19.0
+val Number tempLower = 17.0
+val Number tempChill = 15.0
+val Number tempAway = 15.0
+val Number tempAwayLonger = 13.0
+val Number tempOff = 4.5
+
+// Heizmodi für die ganze Wohnung:
+//  SEMESTER: Betriebsmodus für die SEMESTER Woche
+//  FERIEN: Betriebsmodus, wenn keine FH
+//  PARTY: Konstante Beheizung, automatischer Wechsel zu SEMESTER in der Nacht (nach der Party oder dem besonderen Tag)
+//  SICKDAY: Wärmere Beheizung für den laufenden Tag (Krank zuhause)
+//  WEEKEND_TRIP: leicht abgesenkte Temperatur über das Wochenende, automatischer Wechsel zu SEMESTER am nächsten Montag morgen
+//  AWAY: Unterwegs/längere Zeit abwesend, abgesenkte Temperatur für einen undefinierten Zeitraum
+//  OFF_SUMMER: alle Heizkörper sind aus (Sommerbetrieb)
+//  CALENDAR: einzelne Kalender Termine überschreiben das aktuelle Zeitprogramm
+//  AUTO_DEVICE: Wechselt Gerät in automatik Modus, keine automatische Beeinflussung
+//  MANU_DEVICE: Wechselt Gerät in manuellen Modus, keine automatische Beeinflussung
+
+rule "System started"
+when
+    System started
+then
+    createTimer(now.plusSeconds(180)) [ |
+        logInfo(filename, "Whg_Heating system started")
+        if (Whg_Heating_Mode.state == NULL) Whg_Heating_Mode.postUpdate("SEMESTER")
+        Heating_TargetPresets.members.filter[item | item.state == NULL].forEach[item | item.postUpdate(tempMid)]
+        Whg_Heating_UpdateHeater.sendCommand(ON)
+    ]
+end
+
+rule "Heizmodus umschalten und Stellglieder setzen"
+when
+    Item Whg_Heating_Mode received update or
+    Item Whg_Heating_UpdateHeater received command ON
+then
+    Whg_Heating_UpdateHeater.postUpdate(OFF)
+    logInfo(filename, "Wohnung Heizmodus: " + Whg_Heating_Mode.state)
+    switch Whg_Heating_Mode.state {
+        case "SEMESTER" : {
+            BR_Heizung_Manu.sendCommand(BR_Heizung_PresetTemp.state as Number)
+	    logInfo(filename, "Temperaturaenderung zu " + BR_Heizung_PresetTemp)
+
+            //WZ_Heizung_Manu.sendCommand(WZ_Heizung_PresetTemp.state as Number)
+            //FK_Heizung_Manu.sendCommand(FK_Heizung_PresetTemp.state as Number)
+            //SZ_Heizung_Manu.sendCommand(SZ_Heizung_PresetTemp.state as Number)
+            //BD_Heizung_Manu.sendCommand(BD_Heizung_PresetTemp.state as Number)
+        }
+        case "FERIEN" : {
+	    logInfo(filename, "Ferien Mode, Temperatur: " + tempComfort)
+            BR_Heizung_Manu.sendCommand(tempComfort)
+
+
+        }
+        case "PARTY" : {
+            BR_Heizung_Manu.sendCommand(tempComfort)
+            //WZ_Heizung_Manu.sendCommand(tempComfort)
+            //FK_Heizung_Manu.sendCommand(tempComfort)
+            //SZ_Heizung_Manu.sendCommand(tempChill)
+            //BD_Heizung_Manu.sendCommand(tempMid)
+        }
+        case "SICKDAY" : {
+            BR_Heizung_Manu.sendCommand(tempHigh)
+            //WZ_Heizung_Manu.sendCommand(tempHigh)
+            //FK_Heizung_Manu.sendCommand(tempHigh)
+            //SZ_Heizung_Manu.sendCommand(tempMid)
+            //BD_Heizung_Manu.sendCommand(tempHigh)
+        }
+        case "WEEKEND_TRIP" : {
+            BR_Heizung_Manu.sendCommand(tempAway)
+            //WZ_Heizung_Manu.sendCommand(tempAway)
+            //FK_Heizung_Manu.sendCommand(tempAway)
+            //SZ_Heizung_Manu.sendCommand(tempAway)
+            //BD_Heizung_Manu.sendCommand(tempAway)
+        }
+        case "AWAY" : {
+	    logInfo(filename, "Unterwegs Modus aktiviert, Temp: " + tempAwayLonger)
+            BR_Heizung_Manu.sendCommand(tempAwayLonger)
+            //WZ_Heizung_Manu.sendCommand(tempAwayLonger)
+            //FK_Heizung_Manu.sendCommand(tempAwayLonger)
+            //SZ_Heizung_Manu.sendCommand(tempAwayLonger)
+            //BD_Heizung_Manu.sendCommand(tempAwayLonger)
+        }
+        case "OFF_SUMMER" : {
+	    logInfo(filename, "Sommerausschaltung")
+            BR_Heizung_Manu.sendCommand(tempOff)
+            //WZ_Heizung_Manu.sendCommand(tempOff)
+            //FK_Heizung_Manu.sendCommand(tempOff)
+            //SZ_Heizung_Manu.sendCommand(tempOff)
+            //BD_Heizung_Manu.sendCommand(tempOff)
+        }
+        case "CALENDAR"    : { logWarn(filename, "Wohnung Heizmodus: CALENDAR (nicht implementiert)") }
+        case "AUTO_DEVICE" : { logWarn(filename, "Wohnung Heizmodus: AUTO_DEVICE (nicht implementiert)") }
+        case "MANU_DEVICE" : { logWarn(filename, "Wohnung Heizmodus: MANU_DEVICE (nicht implementiert)") }
+        default            : { logError(filename, "Wohnung Heizmodus ungültig: " + Whg_Heating_Mode.state) }
+    }
+end
+
+
+
+// Whg_Heating_Mode Ende PARTY/SICKDAY
+rule "Party Modus Ende 2:00 Uhr"
+when
+    Time cron "0 0 2 ? * * *"
+then
+    if (Whg_Heating_Mode.state == "PARTY" || Whg_Heating_Mode.state == "SICKDAY") {
+        logInfo(filename, "Wohnung Heizmodus: PARTY/SICKDAY wird verlassen")
+        Whg_Heating_Mode.postUpdate("SEMESTER")
+    }
+end
+
+// Whg_Heating_Mode Ende WEEKEND_TRIP
+rule "Wochenendtrip Ende Montag 13:00 Uhr"
+when
+    Time cron "0 0 13 ? * MON *"
+then
+    if (Whg_Heating_Mode.state == "WEEKEND_TRIP") {
+        logInfo(filename, "Wohnung Heizmodus: WEEKEND TRIP wird verlassen")
+        Whg_Heating_Mode.postUpdate("SEMESTER")
+    }
+end
+
+
+rule "Ferien anheizen 11:30 Uhr"
+when
+    Time cron "0 30 11 ? * * *"
+then
+    if (Whg_Heating_Mode.state == "FERIEN") {
+        logInfo(filename, "Wohnung Heizmodus: Anheizen da Ferien")
+        BR_Heizung_PresetTemp.postUpdate(20.0)
+        Whg_Heating_UpdateHeater.sendCommand(ON)
+    }
+end
+
+
+
+// Whg_Heating_Mode abkühlen jeden Tag
+rule "23:00 Uhr"
+when
+    Time cron "0 00 23 ? * * *"
+then
+    logInfo(filename, "Wohnung Heizmodus: Zeitprogramm: " + now.toString)
+    BR_Heizung_PresetTemp.postUpdate(14.0)
+    //FK_Heizung_PresetTemp.postUpdate(17.0)
+    //SZ_Heizung_PresetTemp.postUpdate(15.0)
+    //BD_Heizung_PresetTemp.postUpdate(17.0)
+    Whg_Heating_UpdateHeater.sendCommand(ON)
+end
+
+
+rule "10:00 Uhr (Wochenende)"
+when
+    Time cron "0 0 10 ? * FRI-SUN *"
+then
+    logInfo(filename, "Wohnung Heizmodus: Zeitprogramm: " + now.toString)
+    BR_Heizung_PresetTemp.postUpdate(20.0)
+    //WZ_Heizung_PresetTemp.postUpdate(21.0)
+    //FK_Heizung_PresetTemp.postUpdate(19.0)
+    //SZ_Heizung_PresetTemp.postUpdate(17.0)
+    //BD_Heizung_PresetTemp.postUpdate(21.0)
+    Whg_Heating_UpdateHeater.sendCommand(ON)
+end
+
+
+
+
+
+
+//Semester Wochenprogramm
+
+rule "17:00 Uhr anheizen Montag"
+when
+    Time cron "0 45 16 ? * MON *"
+then
+    logInfo(filename, "Wohnung Heizmodus: Zeitprogramm: " + now.toString)
+    BR_Heizung_PresetTemp.postUpdate(20.0)
+    //WZ_Heizung_PresetTemp.postUpdate(21.0)
+    //FK_Heizung_PresetTemp.postUpdate(19.0)
+    //SZ_Heizung_PresetTemp.postUpdate(17.0)
+    //BD_Heizung_PresetTemp.postUpdate(20.0)
+    Whg_Heating_UpdateHeater.sendCommand(ON)
+end
+
+rule "Dienstag anheizen 10:00 Uhr"
+when
+    Time cron "0 00 10 ? * TUE *"
+then
+    logInfo(filename, "Wohnung Heizmodus: Zeitprogramm: " + now.toString)
+    BR_Heizung_PresetTemp.postUpdate(20.0)
+    Whg_Heating_UpdateHeater.sendCommand(ON)
+end
+
+rule "12:00 Uhr anheizen Mittwoch"
+when
+    Time cron "0 00 12 ? * WED *"
+then
+    logInfo(filename, "Wohnung Heizmodus: Zeitprogramm: " + now.toString)
+    BR_Heizung_PresetTemp.postUpdate(20.0)
+    //WZ_Heizung_PresetTemp.postUpdate(22.0)
+    //FK_Heizung_PresetTemp.postUpdate(19.0)
+    //SZ_Heizung_PresetTemp.postUpdate(16.0)
+    //BD_Heizung_PresetTemp.postUpdate(20.0)
+    Whg_Heating_UpdateHeater.sendCommand(ON)
+end
+
+rule "18:30 Uhr anheizen Donnerstag"
+when
+    Time cron "0 30 18 ? * THU *"
+then
+    logInfo(filename, "Wohnung Heizmodus: Zeitprogramm: " + now.toString)
+    BR_Heizung_PresetTemp.postUpdate(20.0)
+    //WZ_Heizung_PresetTemp.postUpdate(22.0)
+    //FK_Heizung_PresetTemp.postUpdate(19.0)
+    //SZ_Heizung_PresetTemp.postUpdate(16.0)
+    //BD_Heizung_PresetTemp.postUpdate(20.0)
+    Whg_Heating_UpdateHeater.sendCommand(ON)
+end
+
+
+
+
+
+
+/* Badregeln
+rule "8:30 Uhr (Wochentag Bad)"
+when
+    Time cron "0 30 8 ? * MON-FRI *"
+then
+    logInfo(filename, "Wohnung Heizmodus: Zeitprogramm: " + now.toString)
+    BD_Heizung_PresetTemp.postUpdate(23.0)
+    Whg_Heating_UpdateHeater.sendCommand(ON)
+end
+
+rule "9:30 Uhr (Wochentag Bad)"
+when
+    Time cron "0 30 9 ? * MON-FRI *"
+then
+    logInfo(filename, "Wohnung Heizmodus: Zeitprogramm: " + now.toString)
+    BD_Heizung_PresetTemp.postUpdate(17.0)
+    Whg_Heating_UpdateHeater.sendCommand(ON)
+end
+*/

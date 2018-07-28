@@ -1,0 +1,18 @@
+Group   W66a "Zuhause"  <house>
+// Räume
+Group   BD  "Bad"              <bath>      (W66a)
+Group   FK  "Flur-Küche"       <kitchen>   (W66a)
+Group   SZ  "Schlafzimmer"     <bedroom>   (W66a)
+Group   WZ  "Wohnzimmer"       <video>     (W66a)
+Group BK "Balkon" <garden> (W66a)
+
+// Wartung / Maintenance
+Group:Number:MIN                RSSI_Group       "RSSI aller Geräte [%d dBm]"           <line>          (W66a)
+Group:Number:SUM                Unreach_Group    "Nicht erreichbare Geräte [%d]"        <siren>         (W66a)
+Group:Number:SUM                Pending_Group    "Geräte mit ausstehender Konfig. [%d]" <siren>         (W66a)
+Group:Number:SUM Error_Group "Geräte mit Fehlerzustand [%d]" <error2> (W66a)
+
+String      Whg_Heating_Mode                "Wohnung Heizmodus [%s]"                    <heating>       (W66a)
+Switch Whg_Heating_UpdateHeater "Sende Soll-Temperaturen an Heizkörper" <heating> (W66a)
+
+Switch Whg_Wartung_Trigger "Wartungsroutinen auslösen" (W66a) {expire="5s"}

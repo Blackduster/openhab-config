@@ -1,0 +1,42 @@
+import org.eclipse.xtext.xbase.lib.Functions
+
+val String filename = "heizung-raeume.rules"
+
+val Number tempHigher = 23.0
+val Number tempComfort = 21.0
+val Number tempMid = 19.0
+val Number tempLower = 17.0
+val Number tempChill = 15.0
+val Number tempAway = 15.0
+val Number tempAwayLonger = 13.0
+val Number tempOff = 4.5
+
+rule "System started - Heizung"
+when
+    System started
+then
+    createTimer(now.plusSeconds(200)) [|
+        logInfo(filename, "System started - Heizung")
+        if (BR_Heizung_Fault.state == NULL) BR_Heizung_Fault.postUpdate("NO_FAULT")
+        //if (WZ_Heizung_Fault.state == NULL) WZ_Heizung_Fault.postUpdate("NO_FAULT")
+        //if (FK_Heizung_Fault.state == NULL) FK_Heizung_Fault.postUpdate("NO_FAULT")
+        //if (SZ_Heizung_Fault.state == NULL) SZ_Heizung_Fault.postUpdate("NO_FAULT")
+        //if (BD_Heizung_Fault.state == NULL) BD_Heizung_Fault.postUpdate("NO_FAULT")
+    ]
+end
+
+///////////////////////////////////////////////////////////////////////////////
+// Heizung Auswertung Schnellauswahl (Sitemap)
+rule "BR_Heizung Auswertung Schnellauswahl (Sitemap)"
+when
+    Item BR_Heizung_Preset received command
+then {
+    //logInfo(filename, "Auswertung Schnellauswahl (Sitemap)")
+    switch (receivedCommand){
+        case 0: BR_Heizung_Manu.sendCommand(tempLower)
+        case 1: BR_Heizung_Manu.sendCommand(tempComfort)
+        case 2: BR_Heizung_Manu.sendCommand(tempHigher)
+    }
+    BR_Heizung_Preset.postUpdate(-1)
+}
+end
