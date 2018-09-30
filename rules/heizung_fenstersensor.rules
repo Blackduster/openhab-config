@@ -1,0 +1,15 @@
+val String filename = "heizung_fenstersensor.rules"
+
+rule "Offenes Fenster deaktiviert Heizung"
+when 
+    Item BD_Fenster_State changed from CLOSED to OPEN
+then
+    BD_Heizung_Manu.sendCommand(4.5)
+end
+
+rule "Fenster wird geschlossen - Heizung aktiviert"
+when
+    Item BD_Fenster_State changed from OPEN to CLOSED
+then
+    BD_Heizung_Manu.sendCommand(BD_Heizung_PresetTemp.state as Number)
+end

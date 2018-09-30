@@ -1,5 +1,3 @@
-import org.eclipse.xtext.xbase.lib.Functions
-
 val String filename = "heizung-raeume.rules"
 
 val Number tempHigher = 23.0
@@ -18,10 +16,10 @@ then
     createTimer(now.plusSeconds(200)) [|
         logInfo(filename, "System started - Heizung")
         if (BR_Heizung_Fault.state == NULL) BR_Heizung_Fault.postUpdate("NO_FAULT")
-        //if (WZ_Heizung_Fault.state == NULL) WZ_Heizung_Fault.postUpdate("NO_FAULT")
-        //if (FK_Heizung_Fault.state == NULL) FK_Heizung_Fault.postUpdate("NO_FAULT")
-        //if (SZ_Heizung_Fault.state == NULL) SZ_Heizung_Fault.postUpdate("NO_FAULT")
-        //if (BD_Heizung_Fault.state == NULL) BD_Heizung_Fault.postUpdate("NO_FAULT")
+        if (WZ_Heizung_Fault.state == NULL) WZ_Heizung_Fault.postUpdate("NO_FAULT")
+        if (FG_Heizung_Fault.state == NULL) FG_Heizung_Fault.postUpdate("NO_FAULT")
+        if (SLZ_Heizung_Fault.state == NULL) SLZ_Heizung_Fault.postUpdate("NO_FAULT")
+        if (BD_Heizung_Fault.state == NULL) BD_Heizung_Fault.postUpdate("NO_FAULT")
     ]
 end
 

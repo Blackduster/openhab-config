@@ -1,8 +1,10 @@
 sitemap default label="Wohnung"{
 
     Frame label="Temperaturen und Heizung" {
-        Selection item=Whg_Heating_Mode label="Heizmodus (Wohnung) []" mappings=[SEMESTER="Semester",
+        Selection item=Whg_Heating_Mode label="Heizmodus (Wohnung) []" mappings=[
+        SEMESTER="Semester",
         FERIEN="Semesterferien",
+        ARBEIT="Arbeit",
         PARTY="Party",
         SICKDAY="Krankheitstag",
         WEEKEND_TRIP="Wochenendtrip",
@@ -11,11 +13,11 @@ sitemap default label="Wohnung"{
         ] 
 
         Text label="Büro Heizstellglied [N/A ✘]" icon="error2" visibility=[BR_Heizung_Unreach == ON] valuecolor=["maroon"]
-        Text item=BR_Heizung_Summary label="Büro [%s]" visibility=[BR_Heizung_Unreach != ON] icon="text" {
+        Text item=BR_Heizung_Summary label="Büro [%s]" visibility=[BR_Heizung_Unreach != ON] icon="office" {
             Frame label="Temperatur" {
                 Text item=BR_Heizung_ActTemp label="Aktuelle Temperatur [%.1f °C]"
             }
-            Frame label="Heizung Büro" {
+            Frame label="Heizung Büro" icon="office" {
                 Setpoint item=BR_Heizung_SetTemp label="Stellwert (±1) [%.1f °C]" minValue=4.5 maxValue=30.5 step=1.0 visibility=[BR_Heizung_SetTemp > 4.5]
                 Setpoint item=BR_Heizung_SetTemp label="Stellwert (±½) [%.1f °C]" minValue=4.5 maxValue=30.5 step=0.5 visibility=[BR_Heizung_SetTemp > 4.5]
                 Switch item=BR_Heizung_SetTemp label="Stellglied [OFF]" mappings=[5.0=Einschalten] visibility=[BR_Heizung_SetTemp == 4.5]
@@ -26,11 +28,102 @@ sitemap default label="Wohnung"{
             }
         }
 
-        Frame label="Pufferspeicher"{
-        Text item=Pufferspeicher_RechtsOben_Output label="Temperatur Oben"
-        Text item=Pufferspeicher_RechtsUnten_Output  label="Temperatur Unten"
+        Text label="Bad Heizstellglied [N/A ✘]" icon="error2" visibility=[BD_Heizung_Unreach == ON] valuecolor=["maroon"]
+        Text item=BD_Heizung_Summary label="Bad [%s]" visibility=[BD_Heizung_Unreach != ON] icon="bath" {
+            Frame label="Temperatur" {
+                Text item=BD_Heizung_ActTemp label="Aktuelle Temperatur [%.1f °C]"
+            }
+            Frame label="Heizung Büro" icon="office" {
+                Setpoint item=BD_Heizung_SetTemp label="Stellwert (±1) [%.1f °C]" minValue=4.5 maxValue=30.5 step=1.0 visibility=[BD_Heizung_SetTemp > 4.5]
+                Setpoint item=BD_Heizung_SetTemp label="Stellwert (±½) [%.1f °C]" minValue=4.5 maxValue=30.5 step=0.5 visibility=[BD_Heizung_SetTemp > 4.5]
+                Switch item=BD_Heizung_SetTemp label="Stellglied [OFF]" mappings=[5.0=Einschalten] visibility=[BD_Heizung_SetTemp == 4.5]
+                Switch item=BD_Heizung_Preset label="Schnellwahl" mappings=[0="Abgesenkt", 1="Komfort", 2="Warm"]
+                Switch item=BD_Heizung_BoostMode label="Boost (5min)" mappings=[ON="Starten"]
+                Text item=BD_Heizung_BoostTime label="Boost-Restzeit [%d min]" visibility=[BD_Heizung_BoostTime > 0]
+                Text item=BD_Heizung_Valve label="Ventilstellung [%d %%]"
+            }
         }
+
+        Text label="Schlafzimmer Heizstellglied [N/A ✘]" icon="error2" visibility=[SLZ_Heizung_Unreach == ON] valuecolor=["maroon"]
+        Text item=SLZ_Heizung_Summary label="Schlafzimmer [%s]" visibility=[SLZ_Heizung_Unreach != ON] icon="bedroom" {
+            Frame label="Temperatur" {
+                Text item=SLZ_Heizung_ActTemp label="Aktuelle Temperatur [%.1f °C]"
+            }
+            Frame label="Heizung Schlafzimmer" icon="bedroom" {
+                Setpoint item=SLZ_Heizung_SetTemp label="Stellwert (±1) [%.1f °C]" minValue=4.5 maxValue=30.5 step=1.0 visibility=[SLZ_Heizung_SetTemp > 4.5]
+                Setpoint item=SLZ_Heizung_SetTemp label="Stellwert (±½) [%.1f °C]" minValue=4.5 maxValue=30.5 step=0.5 visibility=[SLZ_Heizung_SetTemp > 4.5]
+                Switch item=SLZ_Heizung_SetTemp label="Stellglied [OFF]" mappings=[5.0=Einschalten] visibility=[SLZ_Heizung_SetTemp == 4.5]
+                Switch item=SLZ_Heizung_Preset label="Schnellwahl" mappings=[0="Abgesenkt", 1="Komfort", 2="Warm"]
+                Switch item=SLZ_Heizung_BoostMode label="Boost (5min)" mappings=[ON="Starten"]
+                Text item=SLZ_Heizung_BoostTime label="Boost-Restzeit [%d min]" visibility=[SLZ_Heizung_BoostTime > 0]
+                Text item=SLZ_Heizung_Valve label="Ventilstellung [%d %%]"
+            }
+        }
+
+        Text label="Flur Heizstellglied [N/A ✘]" icon="error2" visibility=[FG_Heizung_Unreach == ON] valuecolor=["maroon"]
+        Text item=FG_Heizung_Summary label="Flur [%s]" visibility=[FG_Heizung_Unreach != ON] icon="corridor" {
+            Frame label="Temperatur" {
+                Text item=FG_Heizung_ActTemp label="Aktuelle Temperatur [%.1f °C]"
+            }
+            Frame label="Heizung Flur" icon="corridor" {
+                Setpoint item=FG_Heizung_SetTemp label="Stellwert (±1) [%.1f °C]" minValue=4.5 maxValue=30.5 step=1.0 visibility=[FG_Heizung_SetTemp > 4.5]
+                Setpoint item=FG_Heizung_SetTemp label="Stellwert (±½) [%.1f °C]" minValue=4.5 maxValue=30.5 step=0.5 visibility=[FG_Heizung_SetTemp > 4.5]
+                Switch item=FG_Heizung_SetTemp label="Stellglied [OFF]" mappings=[5.0=Einschalten] visibility=[FG_Heizung_SetTemp == 4.5]
+                Switch item=FG_Heizung_Preset label="Schnellwahl" mappings=[0="Abgesenkt", 1="Komfort", 2="Warm"]
+                Switch item=FG_Heizung_BoostMode label="Boost (5min)" mappings=[ON="Starten"]
+                Text item=FG_Heizung_BoostTime label="Boost-Restzeit [%d min]" visibility=[FG_Heizung_BoostTime > 0]
+                Text item=FG_Heizung_Valve label="Ventilstellung [%d %%]"
+            }
+        }
+
+        Text label="Wohnzimmer Heizstellglied [N/A ✘]" icon="error2" visibility=[WZ_Heizung_Unreach == ON] valuecolor=["maroon"]
+        Text item=WZ_Heizung_Summary label="Wohnzimmer [%s]" visibility=[WZ_Heizung_Unreach != ON] icon="screen" {
+            Frame label="Temperatur" {
+                Text item=WZ_Heizung_ActTemp label="Aktuelle Temperatur [%.1f °C]"
+            }
+            Frame label="Heizung Flur" icon="corridor" {
+                Setpoint item=WZ_Heizung_SetTemp label="Stellwert (±1) [%.1f °C]" minValue=4.5 maxValue=30.5 step=1.0 visibility=[WZ_Heizung_SetTemp > 4.5]
+                Setpoint item=WZ_Heizung_SetTemp label="Stellwert (±½) [%.1f °C]" minValue=4.5 maxValue=30.5 step=0.5 visibility=[WZ_Heizung_SetTemp > 4.5]
+                Switch item=WZ_Heizung_SetTemp label="Stellglied [OFF]" mappings=[5.0=Einschalten] visibility=[WZ_Heizung_SetTemp == 4.5]
+                Switch item=WZ_Heizung_Preset label="Schnellwahl" mappings=[0="Abgesenkt", 1="Komfort", 2="Warm"]
+                Switch item=WZ_Heizung_BoostMode label="Boost (5min)" mappings=[ON="Starten"]
+                Text item=WZ_Heizung_BoostTime label="Boost-Restzeit [%d min]" visibility=[WZ_Heizung_BoostTime > 0]
+                Text item=WZ_Heizung_Valve label="Ventilstellung [%d %%]"
+            }
+        }
+
+        Frame label="Pufferspeicher"{
+        Text item=Pufferspeicher_RechtsOben_Output label="Temperatur Oben" icon="temperature_hot"
+        Text item=Pufferspeicher_RechtsUnten_Output  label="Temperatur Unten" icon="temperature_cold"
+        }
+
+        Text label="Wetter" icon="climate" {
+        Frame label="Wetter" icon="weather"{
+            Frame label="Heute"{
+            
+            Text item=Temperature_Today label="Außentemperatur" icon="temperature"
+            Text item=Humidity_Today label="Luftfeuchtigkeit" icon="humidity"
+
+            Text item=Rain_Today label="Regen" icon="rain"
+            Text item=Snow_Today label="Schnee" icon="snow"
+            
+            Text item=Wind_Speed_Today label="Windgeschwindigkeit" icon="wind"
+            Text item=CommonCondition_Today label="Allgemein" icon="climate"
+            }
+            Frame label="Morgen" {
+            Text item=Temperature_Tomorrow label="Außentemperatur" icon="temperature"
+            Text item=Humidity_Tomorrow label="Luftfeuchtigkeit" icon="humidity"
+
+            Text item=Rain_Tomorrow label="Regen" icon="rain"
+            Text item=Snow_Tomorrow label="Schnee" icon="snow"
+            
+            Text item=Wind_Speed_Tomorrow label="Windgeschwindigkeit" icon="wind"
+            Text item=CommonCondition_Tomorrow label="Allgemein" icon="climate"
+            }
+        }
+
 	    
     }
 	
+}
 }

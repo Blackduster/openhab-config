@@ -1,6 +1,11 @@
 Bridge homematic:bridge:ccu "CCU Homegear Bridge" @ "Büro" [ gatewayAddress="127.0.0.1" ]
 {
     Thing HG-HM-CC-RT-DN       OEQ1255511   "Buero" @ "Büro"
+    Thing HG-HM-CC-RT-DN       NEQ1520689   "Bad" @ "Bad"
+    Thing HG-HM-CC-RT-DN       MEQ0057929   "Schlafzimmer" @ "Schlafzimmer"
+    Thing HG-HM-CC-RT-DN       NEQ1520705   "Gang" @ "Gang"
+    Thing HG-HM-CC-RT-DN       MEQ0060476   "Wohnzimmer" @ "Wohnzimmer"
+    Thing HG-HM-Sec-SCo        MEQ0815777   "Bad_Fenstersensor" @ "Bad_Fenstersensor"
     Thing GATEWAY-EXTRAS-CCU   GWE00000000  "Gateway Extras"
 }
 

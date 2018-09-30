@@ -1,0 +1,21 @@
+Number   Temperature_Today                  "Temperature [%.2f °C]"             {weather="locationId=Zuhause, forecast=0, type=temperature, property=current"}
+Number   Humidity_Today                     "Humidity [%d %%]"                  {weather="locationId=Zuhause, forecast=0, type=atmosphere, property=humidity"}
+
+Number   Clouds_Today                       "Clouds [%.0f %%]"                  {weather="locationId=Zuhause, forecast=0, type=clouds, property=percent"}
+
+Number   Rain_Today                         "Rain [%.2f mm/h]"                  {weather="locationId=Zuhause, forecast=0, type=precipitation, property=rain"}
+Number   Snow_Today                         "Snow [%.2f mm/h]"                  {weather="locationId=Zuhause, forecast=0, type=precipitation, property=snow"}
+Number   Wind_Speed_Today                   "Windspeed [%.2f km/h]"             {weather="locationId=Zuhause, forecast=0, type=wind, property=speed"}
+
+String   CommonCondition_Today              "[MAP(wetter_de.map):%s]"           {weather="locationId=Zuhause, forecast=0, type=condition, property=commonId"}
+
+Number   Temperature_Tomorrow                  "Temperature [%.2f °C]"             {weather="locationId=Zuhause, forecast=1, type=temperature, property=current"}
+Number   Humidity_Tomorrow                     "Humidity [%d %%]"                  {weather="locationId=Zuhause, forecast=1, type=atmosphere, property=humidity"}
+
+Number   Clouds_Tomorrow                       "Clouds [%.0f %%]"                  {weather="locationId=Zuhause, forecast=1, type=clouds, property=percent"}
+
+Number   Rain_Tomorrow                         "Rain [%.2f mm/h]"                  {weather="locationId=Zuhause, forecast=1, type=precipitation, property=rain"}
+Number   Snow_Tomorrow                         "Snow [%.2f mm/h]"                  {weather="locationId=Zuhause, forecast=1, type=precipitation, property=snow"}
+Number   Wind_Speed_Tomorrow                   "Windspeed [%.2f km/h]"             {weather="locationId=Zuhause, forecast=1, type=wind, property=speed"}
+
+String   CommonCondition_Tomorrow              "[MAP(wetter_de.map):%s]"           {weather="locationId=Zuhause, forecast=1, type=condition, property=commonId"}
